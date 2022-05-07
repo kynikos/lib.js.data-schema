@@ -1,7 +1,7 @@
-// This file is part of antd-schema-table
+// This file is part of data-schema
 // Copyright (C) 2018-present Dario Giovannetti <dev@dariogiovannetti.net>
 // Licensed under MIT
-// https://github.com/kynikos/lib.js.antd-schema-table/blob/master/LICENSE
+// https://github.com/kynikos/lib.js.data-schema/blob/master/LICENSE
 
 export {FieldAuxiliary} from './FieldAuxiliary'
 export {FieldString} from './FieldString'
@@ -14,6 +14,3 @@ export {FieldDateTime} from './FieldDateTime'
 export {Schema} from './Schema'
 export {SchemaField} from './SchemaField'
 export {SchemaFieldGroup} from './SchemaFieldGroup'
-export {Table} from './Table'
-export {List} from './List'
-export {TableResponsive} from './TableResponsive'

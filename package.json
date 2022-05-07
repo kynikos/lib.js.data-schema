@@ -1,15 +1,15 @@
 {
-  "name": "@kynikos/antd-schema-table",
+  "name": "@kynikos/data-schema",
   "version": "2.3.0",
   "author": "Dario Giovannetti",
-  "description": "Ant Design Schema-configured Table.",
+  "description": "Preprocess data to be used in tables and other UI components.",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kynikos/lib.js.antd-schema-table.git"
+    "url": "https://github.com/kynikos/lib.js.data-schema.git"
   },
   "keywords": [
-    "ant-design react table"
+    "data schema"
   ],
   "main": "./src/index.js",
   "dependencies": {

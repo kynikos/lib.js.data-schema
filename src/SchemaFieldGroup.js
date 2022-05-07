@@ -1,10 +1,7 @@
-// This file is part of antd-schema-table
+// This file is part of data-schema
 // Copyright (C) 2018-present Dario Giovannetti <dev@dariogiovannetti.net>
 // Licensed under MIT
-// https://github.com/kynikos/lib.js.antd-schema-table/blob/master/LICENSE
-
-import {createElement as h} from 'react'
-import {ExpandedRow} from './ExpandedRow'
+// https://github.com/kynikos/lib.js.data-schema/blob/master/LICENSE
 
 
 export class SchemaFieldGroup {
@@ -45,33 +42,13 @@ export class SchemaFieldGroup {
           ancestorsPath: this._ancestorFieldTitlesPath,
         })
 
-        if (column) { return columns.concat(column) } return columns
-      },
-      []
-    )
-  }
+        if (column) {
+          return columns.concat(column)
+        }
 
-  makeNarrowTbody(row, expandedRowRender) {
-    return h(
-      'tbody',
-      null,
-      ...this.fieldsSubTree.filter((field) => field.title).map((field) => h(
-        'tr',
-        null,
-        h('th', null, field.title),
-        h(
-          'td',
-          null,
-          field.fieldsSubTree == null
-            ? field.render(row[field.key])
-            : h(
-              'table',
-              null,
-              field.makeNarrowTbody(row)
-            )
-        )
-      )),
-      expandedRowRender && h(ExpandedRow, {row, expandedRowRender}),
+        return columns
+      },
+      [],
     )
   }
 }
