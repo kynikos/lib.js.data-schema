@@ -1,6 +1,6 @@
 {
   "name": "@kynikos/data-schema",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "author": "Dario Giovannetti",
   "description": "Preprocess data to be used in tables and other UI components.",
   "license": "MIT",
