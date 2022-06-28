@@ -3,17 +3,48 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.data-schema/blob/master/LICENSE
 
+export const ASCEND = 'ascend'
+export const DESCEND = 'descend'
+
 
 export class SchemaField {
   constructor(props) {
-    this.dataIndex = props.dataIndex == null
-      ? (() => { throw Error('dataIndex must be defined') })()
-      : props.dataIndex
+    if (props.dataIndex == null) {
+      throw new Error("'dataIndex' must be defined")
+    }
+    this.dataIndex = props.dataIndex
     this.key = props.key || this.dataIndex
     this.title = props.title == null ? null : props.title
+    if (
+      (props.defaultSortPriority == null) !==
+      (props.defaultSortOrder == null)
+    ) {
+      throw new Error("'defaultSortPriority' and 'defaultSortOrder' must be " +
+        `defined together (dataIndex: ${props.dataIndex})`)
+    }
+    // 'defaultSortPriority' does not exist in Ant Design's Table component
+    this.defaultSortPriority = props.defaultSortPriority == null
+      ? null
+      : props.defaultSortPriority
+    if (!(
+      props.defaultSortOrder == null ||
+      [ASCEND, DESCEND].includes(props.defaultSortOrder)
+    )) {
+      throw new Error("'defaultSortOrder' must be a string that either " +
+        `starts with 'asc' or 'des' (dataIndex: ${props.dataIndex})`)
+    }
+    // 'defaultSortOrder' must be compatible with Ant Design's Table component
     this.defaultSortOrder = props.defaultSortOrder == null
       ? null
       : props.defaultSortOrder
+    // 'sortAscendLabel' does not exist in Ant Design's Table component
+    this.sortAscendLabel = props.sortAscendLabel == null
+      ? null
+      : props.sortAscendLabel
+    // 'sortDescendLabel' does not exist in Ant Design's Table component
+    this.sortDescendLabel = props.sortDescendLabel == null
+      ? null
+      : props.sortDescendLabel
     this.renderify = props.renderify == null
       ? this._renderify.bind(this)
       : (props.renderify && props.renderify.bind(this))
@@ -45,9 +76,9 @@ export class SchemaField {
         // Note that this is effectively thrown when the *second* field
         // with a 'key' key is found, since the first is the actual
         // primary-key field
-        throw Error("'key' is reserved for the primary key")
+        throw new Error("'key' is reserved for the primary key")
       }
-      throw Error(`Duplicated key: ${this.key}`)
+      throw new Error(`Duplicated key: ${this.key}`)
     }
 
     fieldsFlat.push(this)
@@ -71,7 +102,10 @@ export class SchemaField {
         key: this.key,
         title: this.title,
         render: this.render,
+        defaultSortPriority: this.defaultSortPriority,
         defaultSortOrder: this.defaultSortOrder,
+        sortAscendLabel: this.sortAscendLabel,
+        sortDescendLabel: this.sortDescendLabel,
         sorter: this.sorter,
         width: this.width,
         className: this.className,

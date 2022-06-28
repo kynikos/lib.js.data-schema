@@ -5,6 +5,7 @@
 
 import {_FieldPrimaryKey} from './_FieldPrimaryKey'
 import {SchemaFieldGroup} from './SchemaFieldGroup'
+import {ASCEND, DESCEND} from './SchemaField'
 
 let Papa
 try {
@@ -23,9 +24,10 @@ try {
 
 export class Schema {
   constructor(settings, ...fieldsTree) {
-    this.rowKey = settings.rowKey == null
-      ? (() => { throw Error("'rowKey' not specified") })()
-      : settings.rowKey
+    if (settings.rowKey == null) {
+      throw new Error("'rowKey' not specified")
+    }
+    this.rowKey = settings.rowKey
     this.exportFileName = settings.exportFileName == null
       ? 'data.csv'
       : settings.exportFileName
@@ -52,6 +54,33 @@ export class Schema {
       keyToField: this.keyToField,
       ancestorsPath: [],
     })
+
+    // 'defaultSortSetup' must be set *after* running _postInit()
+    this.defaultSortSetup = this._makeDefaultSortSetup()
+  }
+
+  _makeDefaultSortSetup() {
+    const fieldsToSort = []
+
+    for (const field of this.fieldsFlat) {
+      if (field.defaultSortPriority != null && field.defaultSortOrder != null) {
+        fieldsToSort.push([
+          field.defaultSortPriority,
+          field.key,
+          field.defaultSortOrder,
+        ])
+      }
+    }
+
+    fieldsToSort.sort((a, b) => {
+      return a[0] - b[0]
+    })
+
+    return fieldsToSort.reduce(
+      (acc, [priority, key, order]) => {
+        acc.push([key, order])
+        return acc
+      }, [])
   }
 
   load(data) {
@@ -83,6 +112,31 @@ export class Schema {
       })
     }
     return deserializedData
+  }
+
+  sort(deserializedData, fieldKeysAndDirections) {
+    return deserializedData.sort((a, b) => {
+      for (const [fieldKey, sortOrder] of fieldKeysAndDirections) {
+        const field = this.keyToField[fieldKey]
+        const res = field.sorter(a, b)
+        if (res === 0) {
+          continue
+        }
+        if (sortOrder === ASCEND) {
+          return res
+        }
+        if (sortOrder === DESCEND) {
+          return res * -1
+        }
+        throw new Error(`Sort order can only be either '${ASCEND}' or '${
+          DESCEND}'`)
+      }
+      return 0
+    })
+  }
+
+  sortDefault(deserializedData) {
+    return this.sort(deserializedData, this.defaultSortSetup)
   }
 
   export(deserializedData) {
